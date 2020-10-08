@@ -83,6 +83,26 @@ vector<int> postOrderIteration(TreeNode* root) {
     return result;
 }
 
+void myInOrderIteration(TreeNode* root) {
+    if (root != NULL) {
+        return;
+    }
+    stack<TreeNode*>stack;
+    stack.push(root);
+    while (!stack.empty())
+    {
+        TreeNode* node = stack.top();
+        stack.pop();
+        cout << node->val << " ";
+        if(node->right!=NULL){
+            stack.push(node->right);
+        }
+        if (node->right != NULL) {
+            stack.push(node->left);
+        }
+    }
+}
+
 int main() {
 
 }
