@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include<queue>
 #include<stack>
 using namespace std;
 struct TreeNode {
@@ -83,8 +84,34 @@ vector<int> postOrderIteration(TreeNode* root) {
     return result;
 }
 
-void myInOrderIteration(TreeNode* root) {
+vector<vector<int>>levelOrder(TreeNode* root) {
+    vector<vector<int>>result;
+    queue<TreeNode*>queue;
     if (root != NULL) {
+        queue.push(root);
+    }
+    while (!queue.empty())
+    {
+        int len = queue.size();
+        vector<int>level;
+        for (int i = 0; i < len; i++) {
+            TreeNode* node = queue.front();
+            queue.pop();
+            level.push_back(node->val);
+            if(node->left != NULL) {
+                queue.push(node->left);
+            }
+            if (node->right != NULL) {
+                queue.push(node->right);
+            }
+        }
+        result.push_back(level);
+    }
+    return result;
+}
+
+void myPreOrderIteration(TreeNode* root) {
+    if (root == NULL) {
         return;
     }
     stack<TreeNode*>stack;
@@ -102,6 +129,78 @@ void myInOrderIteration(TreeNode* root) {
         }
     }
 }
+void myInOrderIteration(TreeNode* root) {
+    if (root == NULL) {
+        return;
+    }
+    TreeNode* node = root;
+    stack<TreeNode*>stack;
+    while (!stack.empty() || node!=NULL)
+    {
+        while (node!=NULL)
+        {
+            stack.push(node);
+            node = node->left;
+        }
+        TreeNode* top = stack.top();
+        stack.pop();
+        cout << top->val << " ";
+        if (top->right != NULL) {
+            node = top->right;
+        }
+    }
+}
+void myPostOrderIteration(TreeNode* root) {
+    if (root == NULL) {
+        return;
+    }
+    stack<TreeNode*>stack1;
+    stack<TreeNode*>stack2;
+    stack1.push(root);
+    while (!stack1.empty()) {
+        TreeNode* node = stack1.top();
+        stack1.pop();
+        if (node->left != NULL) {
+            stack1.push(node->left);
+        }
+        if (node->right != NULL) {
+            stack1.push(node->right);
+        }
+    }
+    while (!stack2.empty())
+    {
+        TreeNode* node = stack2.top();
+        stack2.pop();
+        cout << node->val << " ";
+    }
+}
+
+vector<vector<int>> myLevelOrder(TreeNode * root) {
+    vector<vector<int>>result;
+    queue<TreeNode*>queue;
+    if (root != NULL) {
+        queue.push(root);
+    }
+    while (!queue.empty())
+    {
+        int len = queue.size();
+        vector<int>level;
+        for (int i = 0; i < len; i++) {
+            TreeNode* node = queue.front();
+            queue.pop();
+            level.push_back(node->val);
+            if (node->left != NULL) {
+                queue.push(node->left);
+            }
+            if (node->right != NULL) {
+                queue.push(node->right);
+            }
+        }
+        result.push_back(level);
+    }
+    return result;
+}
+
 
 int main() {
 
