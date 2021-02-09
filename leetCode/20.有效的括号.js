@@ -33,3 +33,35 @@ var isValid = function(s) {
 };
 
 console.log(isValid(string1))
+
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+var isValid = function(s) {
+    let stack = []
+    let map = new Map()
+    map.set('(',')')
+    map.set('{','}')
+    map.set('[',']')
+    for(let i of s){
+        if(map.has(i)){
+            stack.push(i)
+        }
+        else{
+            if(!stack.length){
+                return false
+            }
+            if(map.get(stack[stack.length-1]) === i){
+                stack.pop()
+            }
+            else{
+                return false
+            }
+        }
+    }
+    if(caches.length){
+        return false
+    }
+    return true
+};
