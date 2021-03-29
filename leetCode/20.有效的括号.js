@@ -60,7 +60,7 @@ var isValid = function(s) {
             }
         }
     }
-    if(caches.length){
+    if(stack.length){
         return false
     }
     return true
