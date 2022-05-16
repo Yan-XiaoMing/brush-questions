@@ -58,3 +58,4 @@ var reverseList = function(head) {
     last.next = null
     return last
 };
+
