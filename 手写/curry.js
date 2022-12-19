@@ -9,33 +9,47 @@
  * @param fn    待柯里化的原函数
  * @param len   所需的参数个数，默认为原函数的形参个数
  */
- function curry(fn,len = fn.length) {
-  return _curry.call(this,fn,len)
+function curry(fn, len = fn.length) {
+  return _curry.call(this, fn, len);
 }
 
 /**
-* 中转函数
-* @param fn    待柯里化的原函数
-* @param len   所需的参数个数
-* @param args  已接收的参数列表
-*/
-function _curry(fn,len,...args) {
+ * 中转函数
+ * @param fn    待柯里化的原函数
+ * @param len   所需的参数个数
+ * @param args  已接收的参数列表
+ */
+function _curry(fn, len, ...args) {
   return function (...params) {
-      console.log(...args,'args')
-      console.log(...params,'params')
-      let _args = [...args,...params];
-      if(_args.length >= len){
-          return fn.apply(this,_args);
-      }else{
-          return _curry.call(this,fn,len,..._args)
-      }
-  }
+    console.log(...args, "args");
+    console.log(...params, "params");
+    let _args = [...args, ...params];
+    if (_args.length >= len) {
+      return fn.apply(this, _args);
+    } else {
+      return _curry.call(this, fn, len, ..._args);
+    }
+  };
 }
 
-var _fn = curry(function(a,b,c,d,e){
-  console.log(a,b,c,d,e)
-});
-
-console.log(_fn)
+console.log(_fn);
 
 _fn(1)(2)(3)(4)(5);
+
+const add = (a, b) => {
+  return a + b;
+};
+
+function curry(fn, ...outArgs) {
+  return function curryInner(...innerArgs) {
+    const fnLength = fn.length;
+    if (fnLength <= outArgs.length + innerArgs.length) {
+      return fn(...outArgs, ...innerArgs);
+    } else {
+      return curry(fn, ...outArgs, ...innerArgs);
+    }
+  };
+}
+
+const curryAdd = curry(add);
+curryAdd(1)(2)(3)(4);
