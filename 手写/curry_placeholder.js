@@ -1,5 +1,3 @@
-// This is a JavaScript coding problem from BFE.dev
-
 /**
  * @param { (...args: any[]) => any } fn
  * @returns { (...args: any[]) => any }
