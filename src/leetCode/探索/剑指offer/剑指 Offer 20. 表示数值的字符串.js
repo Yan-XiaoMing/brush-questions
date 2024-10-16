@@ -2,7 +2,7 @@
  * @param {string} s
  * @return {boolean}
  */
-var isNumber = function (s) {
+let isNumber = function (s) {
   s = s.trim();
   for (let i = 0; i < s.length; i++) {
     const curStr = s[i];
