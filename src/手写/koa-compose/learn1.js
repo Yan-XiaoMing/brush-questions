@@ -1,34 +1,34 @@
 class Compose {
   constructor(middleware) {
-    if (Array.isArray(middleware) === false) {
-      throw new TypeError("middleware must be array");
+    if (!Array.isArray(middleware)) {
+      throw new TypeError("middleware must be an array!");
     }
     for (const middlewareItem of middleware) {
       if (typeof middlewareItem !== "function") {
-        throw new TypeError("middlewareItem must be function");
+        throw new TypeError("middlewareItem must be a function!");
       }
     }
-    this.index = -1;
     this.middleware = middleware;
+    this.index = -1;
     return (next) => {
       this.next = next;
       return this.dispatch(0);
     };
   }
-
   dispatch(index) {
-    if (index <= this.index)
+    if (index <= this.index) {
       return Promise.reject(new Error("next() called multiple times"));
-    this.index = index;
+    }
     let fn = this.middleware[index];
-
-    if (index === this.middleware.length) fn = this.next;
+    if (index === this.middleware.length) {
+      fn = this.next;
+    }
     if (!fn) return Promise.resolve();
 
     try {
       return Promise.resolve(fn(this.dispatch.bind(this, index + 1)));
-    } catch (e) {
-      return Promise.reject(e);
+    } catch (error) {
+      return Promise.reject(error);
     }
   }
 }
@@ -78,13 +78,12 @@ const compose1 = new Compose(middleware1);
 
 const compose2 = new Compose(middleware2);
 
-// compose(() => {
-//   console.log(7);
-// });
+compose1(() => {
+  console.log(7);
+});
 compose2(() => {
   console.log(0);
   return Promise.resolve("0");
 }).then((res) => {
   console.log(res);
 });
-
