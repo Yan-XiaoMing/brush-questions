@@ -41,7 +41,7 @@ const arr2 = [0, 1, 2, [[[3, 4]]]];
  * @returns { Array }
  */
 function flat(arr, depth = 1) {
-  while (depth && arr.some(Array.isArray)) {
+  while (depth && arr.some((item) => Array.isArray(item))) {
     depth--;
     arr = [].concat(...arr);
   }
