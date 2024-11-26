@@ -50,6 +50,71 @@
 //     console.log(res, "res");
 //   });
 
+const runtimePool = new Set();
+const waitListQueue = [];
+const MAX = 3;
+function limitRequest(reqFn) {
+  return new Promise((resolve, reject) => {
+    const isFull = runtimePool.size >= MAX;
+    const request = () => {
+      reqFn()
+        .then((res) => {
+          resolve(res);
+        })
+        .catch((e) => {
+          reject(e);
+        })
+        .finally(() => {
+          runtimePool.delete(request);
+          const next = waitListQueue.shift();
+          if (next) {
+            runtimePool.add(next);
+            next();
+          }
+        });
+    };
+    if (isFull) {
+      waitListQueue.push(request);
+    } else {
+      runtimePool.add(request);
+      request();
+    }
+  });
+}
+
+class RequestQueue {
+  constructor(maxConcurrent) {
+    this.maxConcurrent = maxConcurrent;
+    this.currentRunning = 0;
+    this.taskQueue = [];
+  }
+
+  enqueue(url) {
+    return new Promise((resolve, reject) => {
+      const task = () => {
+        this.currentRunning++;
+        sendRequest(url)
+          .then((res) => resolve(res))
+          .catch((err) => {
+            reject(err);
+          })
+          .finally(() => {
+            this.currentRunning--;
+            this.dequeue();
+          });
+      };
+      this.taskQueue.push(task);
+      this.dequeue();
+    });
+  }
+  dequeue() {
+    if (this.currentRunning < this.maxConcurrent && this.taskQueue.length) {
+      const task = this.taskQueue.shift();
+      task();
+    }
+  }
+}
+
 class RequestQueue {
   constructor(maxConcurrent) {
     this.maxConcurrent = maxConcurrent;
