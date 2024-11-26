@@ -22,12 +22,35 @@ let data = {
             str: "str111",
           },
         },
-        
       ],
     ],
   },
 };
 
+function hump(param) {
+  Object.keys(param).forEach((key) => {
+    const objItem = param[key];
+    if (objItem instanceof object || objItem instanceof Array) {
+      hump(objItem);
+    }
+    const transformKeyRes = transformKey(key);
+    if (transformKeyRes !== key) {
+      param[transformKeyRes] = param[key];
+      delete param[key];
+    }
+  });
+}
+
 function transformKey(key) {
   const keyArr = key.split("_");
+  for (let i = 0; i < keyArr.length; i++) {
+    if (keyArr.includes["url"] && keyArr.includes("id")) {
+      keyArr[i] = keyArr[i].toUpperCase();
+    } else {
+      if (i !== 0) {
+        keyArr[i] = keyArr[i].replace(keyArr[i][0], keyArr[i][0].toUpperCase());
+      }
+    }
+  }
+  return keyArr.join("");
 }
